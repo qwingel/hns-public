@@ -9,6 +9,7 @@
 const TT = 1;
 const CT = 2;
 const SPEC = 3;
+const MAX_FOG = 10;
 const CLEAR_HUD_TASK = 4444;
 const Float:MIN_DISTANCE = 200.0;
 const Float:MAX_PERFECT_PRESTRAFE = 300.0;
@@ -84,7 +85,7 @@ public fwdPlayerPreThink(id){
             bOnGround[id] = true;
             iGroundFrames[id]++;
             g_iPlayerFog[id] = 0;
-            if(iGroundFrames[id] <= 5){
+            if(iGroundFrames[id] <= MAX_FOG){
                 bPerfect[id] = false;
                 g_iPlayerFog[id] = iGroundFrames[id];
                 if(button & IN_JUMP && ~oldbutton & IN_JUMP && (g_iPlayerFog[id] == 1) == (flSpeedBefore[id] < MAX_PERFECT_PRESTRAFE))

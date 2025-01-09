@@ -19,8 +19,8 @@ new const db_Pass[] = "Krasivey2006";
 new const table_name[] = "hns_players";
 
 const SECONDS_LIVE_FOR_EXP = 10;
-const EXP_FOR_KILL = 12;
-const EXP_FOR_ASSIST = 8;
+const EXP_FOR_KILL = 6;
+const EXP_FOR_ASSIST = 3;
 const Float:MIN_DMG_FOR_SAVE = 1.0;
 
 enum _:SQL {
@@ -151,7 +151,7 @@ public OnPlayerTakeDamage_Post(victim, inflictor, attacker, Float:damage, damage
     g_Players[victim][pi_DMG] += floatround(damage);
     if(~damagebits & DMG_FALL || damage < MIN_DMG_FOR_SAVE){
         if(get_user_team(attacker) == 2 && get_user_team(victim) == 1){
-            if(get_user_health(victim) > 0){
+            if(get_user_health(victim) > 0){ //TODO: переделать, не работает(is_user_alive(id)?)
                 g_Players[attacker][pi_EXP] += EXP_FOR_ASSIST;
             } else { 
                 g_Players[attacker][pi_EXP] += EXP_FOR_KILL;

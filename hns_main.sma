@@ -20,6 +20,11 @@ const SPEC = 3;
 const CT = 2;
 const TT = 1;
 
+new const g_szTTUseSound[] = "buttons/blip1.wav";
+new const g_szDefUseSound[] = "common/wpn_denyselect.wav";
+new const g_szDeployKnifeSound[] = "weapons/knife_deploy1.wav";
+
+
 new const g_szDefaultEntities[][] = {
     "func_hostage_rescue",
     "info_hostage_rescue",
@@ -48,7 +53,8 @@ public plugin_precache(){
     register_plugin(PLUGIN, VERSION, AUTHOR);
 
     g_iRegisterSpawn = register_forward(FM_Spawn, "fwdSpawn", 1);
-
+    
+    precache_sound(g_szTTUseSound);
     new Cvars[CvarPointers];
 
     Cvars[cp_RoundOver] = get_cvar_pointer("mp_roundover");
@@ -82,6 +88,7 @@ public plugin_init(){
     registerSayCmd("swap", "sw", "hns_swap_teams", ACCESS);
 
     unregister_forward(FM_Spawn, g_iRegisterSpawn, 1);
+    register_forward(FM_EmitSound, "fwdEmitSound");
 
     RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "fwdKnifePrim");
     RegisterHam(Ham_Item_Deploy, "weapon_knife", "fwdBlockKnife", 1);
@@ -222,6 +229,18 @@ public fwdSpawn(entid){
             }
         }
     }
+}
+
+public fwdEmitSound(id, channel, sample[], Float:volume, Float:attenuation, flags, pitch){
+    if(equali(sample, g_szDeployKnifeSound))
+        return FMRES_SUPERCEDE;
+
+    if(is_user_alive(id) && get_user_team(id) == TT && equali(sample, g_szDefUseSound)){
+        emit_sound(id, channel, g_szTTUseSound, volume, attenuation, flags, pitch);
+        return FMRES_SUPERCEDE;
+    }
+
+    return FMRES_IGNORED;
 }
 
 public fwdKnifePrim(const iPlayer){
